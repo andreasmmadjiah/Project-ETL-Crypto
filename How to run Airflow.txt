@@ -1,0 +1,15 @@
+To run airflow use
+
+docker run -d -p 8080:8080 puckel/docker-airflow webserver
+
+you can also use docker run --name docker -p 8080:8080 {id} webserver
+
+
+To connect, you need to consider
+1. Your postgres connection is to localhost, but if you use for example pgadmin etc2, as they are container, localhost here will mean localhost for pgadmincontainer. As such, you need
+to use servcices name in postgres that is postgres: or db: in these compose
+
+
+
+to kill all docker container
+FOR /f "tokens=*" %i IN ('docker ps -q') DO docker stop %i

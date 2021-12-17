@@ -1,0 +1,37 @@
+CREATE TABLE IF NOT EXISTS CRYPTOEXCHANGERATE(
+	crypto_code VARCHAR(20) NOT NULL,
+	cur_code varchar(20) NOT NULL,
+	exchange_rate FLOAT NOT NULL,
+	ask_price FLOAT NOT NULL,
+	bid_price FLOAT NOT NULL,
+	ddate TIMESTAMP,
+	utc VARCHAR(20),
+	created_date TIMESTAMP
+);
+
+select * From CRYPTOEXCHANGERATE
+
+CREATE TABLE IF NOT EXISTS CRYPTOCODE(
+	crypto_code VARCHAR(20) NOT NULL,
+	crypto_name varchar(50) NOT NULL,
+	created_date TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS CURCODE(
+	cur_code VARCHAR(20) NOT NULL,
+	cur_name varchar(50) NOT NULL,
+	created_date TIMESTAMP
+);
+
+INSERT INTO CRYPTOCODE 
+VALUES 
+	('ETH','Etherium',TO_TIMESTAMP(to_char(CURrENT_TIMESTAMP,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd HH:MM:SS'))
+	, ('BTC','Bitcoin',TO_TIMESTAMP(to_char(CURrENT_TIMESTAMP,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd HH:MM:SS'))
+	
+INSERT INTO CURCODE 
+VALUES 
+	('IDR','Indonesian Rupiah',TO_TIMESTAMP(to_char(CURrENT_TIMESTAMP,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd HH:MM:SS'))
+
+
+
+select TO_TIMESTAMP(to_char(CURrENT_TIMESTAMP,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd HH:MM:SS')

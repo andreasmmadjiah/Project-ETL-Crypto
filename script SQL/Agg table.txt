@@ -1,0 +1,68 @@
+drop table cyptoexchangerate_cleaned;
+
+drop table cyptoexchangerate_agg_daily;
+
+create table if not exists cyptoexchangerate_cleaned (
+	ddate TIMESTAMP,
+	crypto_code VARCHAR(20),
+	cur_code VARCHAR(20),
+	crypto_name VARCHAR(20),
+	cur_name VARCHAR(20),
+	exchange_rate float,
+	ask_price  float,
+	bid_price float,
+	created_date TIMESTAMP
+)
+
+create table if not exists cyptoexchangerate_agg_daily (
+	ddate TIMESTAMP,
+	crypto_code VARCHAR(20),
+	cur_code VARCHAR(20),
+	crypto_name VARCHAR(20),
+	cur_name VARCHAR(20),
+	avg_exchange_rate float,
+	avg_ask_price  float,
+	avg_bid_price float,
+	created_date TIMESTAMP
+)
+
+
+INSERT INTO cyptoexchangerate_cleaned
+                select to_timestamp(to_char(ddate,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd HH:MM:SS') as ddate
+                    , a.crypto_code
+                    , a.cur_code
+                    , b.crypto_name
+                    , c.cur_name
+                    , max(exchange_rate) as exchange_rate
+                    , max(ask_price) as ask_price 
+                    , max(bid_price) as bid_price
+                    , to_timestamp('{{ds}}','YYYY-mm-dd') as created_date
+                from cryptoexchangerate as a 
+                WHERE a.created_date = '{{ds}}'
+                left join cryptocode b on a.crypto_code = b.crypto_code
+                left join curcode c on a.cur_code = c.cur_code
+                group by to_timestamp(to_char(ddate,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd HH:MM:SS')
+                    ,a.crypto_code
+                    ,a.cur_code
+                    ,b.crypto_name
+                    ,c.cur_name;
+
+INSERT INTO cyptoexchangerate_agg_daily
+                select to_timestamp(to_char(ddate,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd') as ddate
+                    , a.crypto_code
+                    , a.cur_code
+                    , b.crypto_name
+                    , c.cur_name
+                    , avg(exchange_rate) as avg_exchange_rate
+                    , avg(ask_price) as avg_ask_price 
+                    , avg(bid_price) as avg_bid_price
+                    , to_timestamp('{{ds}}','YYYY-mm-dd') as created_date
+                from cryptoexchangerate as a 
+                WHERE a.created_date = '{{ds}}'
+                left join cryptocode b on a.crypto_code = b.crypto_code
+                left join curcode c on a.cur_code = c.cur_code
+                group by to_timestamp(to_char(ddate,'YYYY-mm-dd HH:MM:SS'),'YYYY-mm-dd')
+                    ,a.crypto_code
+                    ,a.cur_code
+                    ,b.crypto_name
+                    ,c.cur_name;
